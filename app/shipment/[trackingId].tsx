@@ -12,9 +12,6 @@ import { AddressCard } from "@/components/AddressCard";
 import { StatusBadge } from "@/components/StatusPill";
 import { LoadingState } from "@/components/LoadingState";
 import { ErrorState } from "@/components/ErrorState";
-import { LiveTrackingMap } from "@/components/LiveTrackingMap";
-import { ShipmentStatus } from "@/types/shipment";
-
 const PACKAGE_TYPE_LABEL: Record<string, string> = {
   document: "Document",
   parcel: "Parcel",
@@ -34,13 +31,6 @@ export default function ShipmentDetailsScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackingId]);
 
-  // Shipment is "active" when the driver is on the way or in transit.
-  // The backend injects trip_id, delivery_lat, delivery_lng via the track endpoint.
-  const active = shipment as any;
-  const isActiveDelivery =
-    shipment?.status === ShipmentStatus.OutForDelivery ||
-    shipment?.status === ShipmentStatus.InTransit;
-
   return (
     <View style={styles.flex}>
       <Header variant="title" title="Shipment Details" leftAction="back" />
@@ -59,20 +49,6 @@ export default function ShipmentDetailsScreen() {
               <StatusBadge status={shipment.status} />
             </View>
           </Card>
-
-          {/* Live Driver Tracking Map — only shown when shipment is in active transit */}
-          {isActiveDelivery ? (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Live Driver Location</Text>
-              <LiveTrackingMap
-                tripId={active?.trip_id ?? null}
-                shipmentId={shipment.id}
-                destinationLat={active?.delivery_lat ?? null}
-                destinationLng={active?.delivery_lng ?? null}
-                height={240}
-              />
-            </View>
-          ) : null}
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Tracking Timeline</Text>
