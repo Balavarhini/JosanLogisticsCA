@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, spacing, typography } from "@constants/theme";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,6 +13,7 @@ import { Checkbox } from "@/components/Checkbox";
 /** Login — email/username + password, matching the source design's "Welcome Back!" screen. */
 export default function LoginScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { login } = useAuth();
 
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -50,7 +52,7 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: Math.max(insets.top + 12, spacing.xl + 12) }]} keyboardShouldPersistTaps="handled">
         <Pressable style={styles.langRow} accessibilityRole="button">
           <Ionicons name="globe-outline" size={16} color={colors.textPrimary} />
           <Text style={styles.langText}>English</Text>

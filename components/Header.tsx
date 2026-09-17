@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, radius, spacing, typography } from "@constants/theme";
 import { AppMenu } from "./AppMenu";
@@ -22,6 +23,7 @@ interface HeaderProps {
  */
 export function Header({ variant = "title", title, leftAction, rightElement, onBack }: HeaderProps) {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
   const resolvedLeftAction = leftAction ?? (variant === "brand" ? "menu" : "back");
 
@@ -30,8 +32,10 @@ export function Header({ variant = "title", title, leftAction, rightElement, onB
     if (router.canGoBack()) router.back();
   };
 
+  const topPadding = Math.max(insets.top + 6, spacing.lg + 12);
+
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, { paddingTop: topPadding }]}>
       {resolvedLeftAction === "menu" ? (
         <Pressable
           onPress={() => setMenuOpen(true)}
