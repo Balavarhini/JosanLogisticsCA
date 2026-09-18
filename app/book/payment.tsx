@@ -122,7 +122,7 @@ export default function BookPaymentScreen() {
         <Card style={styles.paypalHeaderCard}>
           <View style={styles.paypalLogoRow}>
             <View style={styles.paypalBadge}>
-              <Ionicons name="logo-paypal" size={32} color="#003087" />
+              <Ionicons name="logo-paypal" size={32} color={colors.primaryDark} />
               <View style={styles.paypalTitleWrap}>
                 <Text style={styles.paypalTitle}>PayPal Singapore</Text>
                 <Text style={styles.paypalSubtitle}>Fast, Secure & Protected Payment</Text>
@@ -174,7 +174,7 @@ export default function BookPaymentScreen() {
               {selectedMethod === "paypal_account" ? <View style={styles.radioDot} /> : null}
             </View>
 
-            <Ionicons name="wallet-outline" size={24} color={selectedMethod === "paypal_account" ? "#0070BA" : colors.textSecondary} />
+            <Ionicons name="wallet-outline" size={24} color={selectedMethod === "paypal_account" ? colors.primary : colors.textSecondary} />
 
             <View style={styles.methodInfo}>
               <Text style={styles.methodTitle}>Pay with PayPal Account</Text>
@@ -193,7 +193,7 @@ export default function BookPaymentScreen() {
                 autoCapitalize="none"
               />
               <View style={styles.protectionNotice}>
-                <Ionicons name="shield-checkmark" size={18} color="#0070BA" />
+                <Ionicons name="shield-checkmark" size={18} color={colors.gold} />
                 <Text style={styles.protectionText}>Eligible for PayPal Buyer Protection in Singapore.</Text>
               </View>
             </Card>
@@ -208,7 +208,7 @@ export default function BookPaymentScreen() {
               {selectedMethod === "paypal_card" ? <View style={styles.radioDot} /> : null}
             </View>
 
-            <Ionicons name="card-outline" size={24} color={selectedMethod === "paypal_card" ? "#0070BA" : colors.textSecondary} />
+            <Ionicons name="card-outline" size={24} color={selectedMethod === "paypal_card" ? colors.primary : colors.textSecondary} />
 
             <View style={styles.methodInfo}>
               <Text style={styles.methodTitle}>Debit or Credit Card</Text>
@@ -297,9 +297,9 @@ const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
   paypalHeaderCard: {
-    backgroundColor: "#F4F7FA",
+    backgroundColor: colors.surface,
     borderWidth: 1.5,
-    borderColor: "#0070BA",
+    borderColor: colors.gold,
     borderRadius: radius.card,
     padding: spacing.md + 4,
     gap: spacing.sm,
@@ -307,23 +307,23 @@ const styles = StyleSheet.create({
   paypalLogoRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   paypalBadge: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   paypalTitleWrap: { gap: 1 },
-  paypalTitle: { fontFamily: typography.fontFamily.headingBold, fontSize: typography.h3.fontSize, color: "#003087" },
+  paypalTitle: { fontFamily: typography.fontFamily.headingBold, fontSize: typography.h3.fontSize, color: colors.primaryDark },
   paypalSubtitle: { fontFamily: typography.fontFamily.bodyRegular, fontSize: typography.caption.fontSize, color: colors.textSecondary },
   flagBadge: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#E6F0FA",
+    backgroundColor: colors.goldSoft,
     paddingHorizontal: spacing.sm,
     paddingVertical: 4,
     borderRadius: radius.sm,
   },
   flagEmoji: { fontSize: 16 },
-  flagCode: { fontFamily: typography.fontFamily.bodyBold, fontSize: typography.caption.fontSize, color: "#003087" },
-  amountDivider: { height: 1, backgroundColor: "#D1E2F2", marginVertical: 4 },
+  flagCode: { fontFamily: typography.fontFamily.bodyBold, fontSize: typography.caption.fontSize, color: colors.primaryDark },
+  amountDivider: { height: 1, backgroundColor: colors.border, marginVertical: 4 },
   amountRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   amountLabel: { fontFamily: typography.fontFamily.bodyMedium, fontSize: typography.bodySmall.fontSize, color: colors.textSecondary },
-  amountValue: { fontFamily: typography.fontFamily.headingBold, fontSize: typography.h2.fontSize, color: "#0070BA" },
+  amountValue: { fontFamily: typography.fontFamily.headingBold, fontSize: typography.h2.fontSize, color: colors.primary },
   section: { gap: spacing.sm },
   sectionTitle: { fontFamily: typography.fontFamily.headingBold, fontSize: typography.h3.fontSize, color: colors.textPrimary },
   breakdownCard: { gap: spacing.xs + 2 },
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     padding: spacing.md,
   },
-  methodCardSelected: { borderColor: "#0070BA", backgroundColor: "#F4F7FA" },
+  methodCardSelected: { borderColor: colors.gold, backgroundColor: colors.cardWarm },
   radioCircle: {
     width: 20,
     height: 20,
@@ -353,13 +353,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: "#0070BA" },
+  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.primary },
   methodInfo: { flex: 1, gap: 2 },
   methodTitle: { fontFamily: typography.fontFamily.bodyBold, fontSize: typography.bodySmall.fontSize, color: colors.textPrimary },
   methodDesc: { fontFamily: typography.fontFamily.bodyRegular, fontSize: typography.caption.fontSize, color: colors.textSecondary },
-  methodDetailsCard: { gap: spacing.sm, marginTop: -spacing.xs, borderColor: "#0070BA" },
+  methodDetailsCard: { gap: spacing.sm, marginTop: -spacing.xs, borderColor: colors.gold },
   protectionNotice: { flexDirection: "row", alignItems: "center", gap: spacing.xs, paddingTop: 4 },
-  protectionText: { fontFamily: typography.fontFamily.bodyRegular, fontSize: typography.caption.fontSize, color: "#0070BA" },
+  protectionText: { fontFamily: typography.fontFamily.bodyRegular, fontSize: typography.caption.fontSize, color: colors.primaryDark },
   cardRow: { flexDirection: "row", gap: spacing.sm },
   cardCol: { flex: 1 },
   formError: { fontFamily: typography.fontFamily.bodyRegular, fontSize: typography.bodySmall.fontSize, color: colors.error, textAlign: "center" },

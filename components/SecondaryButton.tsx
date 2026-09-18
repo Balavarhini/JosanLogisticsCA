@@ -43,28 +43,30 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   outline: {
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderWidth: 1.5,
-    borderColor: colors.primary,
+    borderColor: colors.gold,
   },
   ghost: {
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
   },
   pressed: {
-    opacity: 0.7,
+    opacity: 0.85,
+    backgroundColor: colors.goldLight,
   },
   disabled: {
     borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
   label: {
     fontFamily: typography.fontFamily.bodyBold,
     fontSize: typography.button.fontSize,
-    color: colors.textPrimary,
+    color: colors.primaryDark,
   },
   outlineLabel: {
-    color: colors.primary,
+    color: colors.primaryDark,
   },
   disabledLabel: {
     color: colors.textMuted,

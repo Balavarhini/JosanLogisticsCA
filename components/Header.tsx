@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -62,17 +62,11 @@ export function Header({ variant = "title", title, leftAction, rightElement, onB
 
       {variant === "brand" ? (
         <View style={styles.brandWrap}>
-          <View style={styles.brandRow}>
-            <View style={styles.logoMark}>
-              <Text style={styles.logoMarkText}>J</Text>
-            </View>
-            <View>
-              <Text style={styles.brandTitle}>
-                JOSAN <Text style={styles.brandTitleAccent}>LOGISTICS</Text>
-              </Text>
-              <Text style={styles.brandTagline}>Delivering Trust, On Time, Every Time.</Text>
-            </View>
-          </View>
+          <Image
+            source={require("@/assets/images/logo.png")}
+            style={styles.headerLogoImage}
+            resizeMode="contain"
+          />
         </View>
       ) : (
         <Text style={styles.title} numberOfLines={1}>
@@ -112,27 +106,9 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   brandWrap: { flex: 1, alignItems: "center" },
-  brandRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
-  logoMark: {
-    width: 26,
-    height: 26,
-    borderRadius: 8,
-    backgroundColor: colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logoMarkText: { color: colors.white, fontFamily: typography.fontFamily.bodyExtraBold, fontSize: 14 },
-  brandTitle: {
-    fontFamily: typography.fontFamily.bodyExtraBold,
-    fontSize: 15,
-    letterSpacing: 0.5,
-    color: colors.navy,
-  },
-  brandTitleAccent: { color: colors.primary },
-  brandTagline: {
-    fontFamily: typography.fontFamily.bodyRegular,
-    fontSize: 9,
-    color: colors.textSecondary,
+  headerLogoImage: {
+    width: 150,
+    height: 44,
   },
 });
 

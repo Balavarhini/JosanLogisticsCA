@@ -16,6 +16,7 @@ interface AuthContextValue {
   /** True only during the initial session-restore on app launch. */
   isBootstrapping: boolean;
   login: (payload: LoginRequest) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   register: (payload: RegisterRequest) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -49,6 +50,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (payload: LoginRequest) => {
     const result = await authService.login(payload);
+    const freshUser = await authService.fetchCurrentUser();
+    await authService.persistSession(result.token, result.refreshToken, freshUser);
+    setToken(result.token);
+    setUserState(freshUser);
+  }, []);
+
+  const loginWithGoogle = useCallback(async () => {
+    const result = await authService.loginWithGoogle();
     const freshUser = await authService.fetchCurrentUser();
     await authService.persistSession(result.token, result.refreshToken, freshUser);
     setToken(result.token);
@@ -89,13 +98,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAuthenticated: !!token,
       isBootstrapping,
       login,
+      loginWithGoogle,
       register,
       forgotPassword,
       logout,
       refreshUser,
       setUser,
     }),
-    [user, token, isBootstrapping, login, register, forgotPassword, logout, refreshUser, setUser]
+    [user, token, isBootstrapping, login, loginWithGoogle, register, forgotPassword, logout, refreshUser, setUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

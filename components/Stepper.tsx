@@ -18,7 +18,7 @@ export function Stepper({ steps, currentIndex }: StepperProps) {
         return (
           <View key={step} style={styles.stepWrap}>
             <View style={styles.circleRow}>
-              <View style={[styles.circle, (isDone || isActive) && styles.circleActive]}>
+              <View style={[styles.circle, isDone && styles.circleDone, isActive && styles.circleActive]}>
                 <Text style={[styles.circleText, (isDone || isActive) && styles.circleTextActive]}>{index + 1}</Text>
               </View>
               {!isLast ? <View style={[styles.connector, isDone && styles.connectorDone]} /> : null}
@@ -46,12 +46,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: -15,
+    backgroundColor: colors.card,
   },
-  circleActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  circleDone: { backgroundColor: colors.gold, borderColor: colors.gold },
+  circleActive: { backgroundColor: colors.primary, borderColor: colors.gold, borderWidth: 2 },
   circleText: { fontFamily: typography.fontFamily.bodyBold, fontSize: 13, color: colors.textMuted },
   circleTextActive: { color: colors.white },
   connector: { flex: 1, height: 2, backgroundColor: colors.border },
-  connectorDone: { backgroundColor: colors.primary },
+  connectorDone: { backgroundColor: colors.gold },
   stepLabel: {
     marginTop: 6,
     fontFamily: typography.fontFamily.bodyMedium,
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: "center",
   },
-  stepLabelActive: { color: colors.textPrimary },
+  stepLabelActive: { color: colors.textPrimary, fontFamily: typography.fontFamily.bodyBold },
 });
 
 export default Stepper;

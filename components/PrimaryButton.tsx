@@ -39,7 +39,7 @@ export function PrimaryButton({
       accessibilityHint={accessibilityHint}
       style={({ pressed }) => [
         styles.base,
-        { backgroundColor: isDisabled ? colors.border : VARIANT_BG[variant] },
+        { backgroundColor: isDisabled ? colors.border : pressed && variant === "primary" ? colors.primaryDark : VARIANT_BG[variant] },
         pressed && !isDisabled && styles.pressed,
         style,
       ]}

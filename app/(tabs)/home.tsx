@@ -1,26 +1,38 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, radius, shadow, spacing, typography } from "@constants/theme";
 import { useAuth } from "@/hooks/useAuth";
+import { useShipmentList } from "@/hooks/useShipments";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getArrivingTodayShipments, triggerDeliveryIntimationNotification } from "@/services/notifications";
 import { Header } from "@/components/Header";
 import { LogisticsHeroScene } from "@/components/LogisticsHeroScene";
+import { Card } from "@/components/Card";
+import { PrimaryButton } from "@/components/PrimaryButton";
 
 /**
  * Minimal & Modern Home Dashboard — featuring an animated Singapore roadway
- * logistics scene, personalized customer greeting, catching hero messaging,
- * and a single "Book a Shipment" CTA.
+ * logistics scene, personalized customer greeting, Arriving Today parcel
+ * intimation banner, and single "Book a Shipment" CTA.
  */
 export default function HomeScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { data: shipments } = useShipmentList();
+  const { t } = useLanguage();
+
+  const arrivingShipments = getArrivingTodayShipments(shipments ?? []);
+  const activeArrivingParcel = arrivingShipments[0] ?? null;
 
   // Screen entrance fade animation
   const fadeAnim = useRef(new Animated.Value(0)).current;
   // Button press spring scale
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const [bellRinging, setBellRinging] = useState(false);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  const [notificationsModalOpen, setNotificationsModalOpen] = useState(false);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -28,7 +40,15 @@ export default function HomeScreen() {
       duration: 600,
       useNativeDriver: true,
     }).start();
-  }, [fadeAnim]);
+
+    // Pulsing animation for the Arriving Today live badge
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1.2, duration: 800, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
+      ])
+    ).start();
+  }, [fadeAnim, pulseAnim]);
 
   const onPressInButton = () => {
     Animated.spring(scaleAnim, {
@@ -49,9 +69,12 @@ export default function HomeScreen() {
     router.push("/book/details");
   };
 
-  const handleNotificationPress = () => {
-    setBellRinging(true);
-    setTimeout(() => setBellRinging(false), 1200);
+  const handleTriggerNotification = () => {
+    if (activeArrivingParcel) {
+      triggerDeliveryIntimationNotification(activeArrivingParcel.trackingId, activeArrivingParcel.delivery?.city);
+    } else {
+      triggerDeliveryIntimationNotification("JSN123456789IN", "Mumbai");
+    }
   };
 
   return (
@@ -63,31 +86,69 @@ export default function HomeScreen() {
             accessibilityRole="button"
             accessibilityLabel="Notifications"
             style={styles.bellButton}
-            onPress={handleNotificationPress}
+            onPress={() => setNotificationsModalOpen(true)}
             hitSlop={8}
           >
             <Ionicons
-              name={bellRinging ? "notifications" : "notifications-outline"}
+              name={arrivingShipments.length > 0 ? "notifications" : "notifications-outline"}
               size={22}
-              color={bellRinging ? colors.primary : colors.textPrimary}
+              color={arrivingShipments.length > 0 ? colors.primary : colors.textPrimary}
             />
-            {bellRinging && <View style={styles.bellBadge} />}
+            {arrivingShipments.length > 0 && <View style={styles.bellBadge} />}
           </Pressable>
         }
       />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Animated.View style={[styles.mainWrap, { opacity: fadeAnim }]}>
+          {/* Compact Arriving Today Intimation Banner */}
+          {activeArrivingParcel ? (
+            <Card style={styles.arrivingCardCompact}>
+              <View style={styles.arrivingCompactMain}>
+                <View style={styles.arrivingLeftWrap}>
+                  <View style={styles.arrivingTitleWrap}>
+                    <Animated.View style={[styles.pulseDot, { transform: [{ scale: pulseAnim }] }]} />
+                    <Text style={styles.arrivingBadgeText}>{t("parcelArrivingToday")}</Text>
+                  </View>
+                  <Text style={styles.arrivingCompactSub} numberOfLines={1}>
+                    #{activeArrivingParcel.trackingId} • {activeArrivingParcel.delivery?.city ?? "Singapore"} ({t("by5pm")})
+                  </Text>
+                </View>
+
+                <View style={styles.arrivingCompactActions}>
+                  <Pressable
+                    style={styles.trackButtonCompact}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/shipment/[trackingId]",
+                        params: { trackingId: activeArrivingParcel.trackingId },
+                      })
+                    }
+                  >
+                    <Ionicons name="compass-outline" size={14} color={colors.white} />
+                    <Text style={styles.trackButtonTextCompact}>{t("trackLiveDelivery")}</Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={styles.notifyButtonCompact}
+                    onPress={handleTriggerNotification}
+                    accessibilityLabel={t("intimateMe")}
+                  >
+                    <Ionicons name="notifications-outline" size={14} color={colors.primary} />
+                  </Pressable>
+                </View>
+              </View>
+            </Card>
+          ) : null}
+
           {/* Animated Hero Logistics Scene */}
           <LogisticsHeroScene />
 
           {/* Hero Wording & Greeting */}
           <View style={styles.heroTextWrap}>
-            <Text style={styles.userGreeting}>Welcome back, {user?.name?.split(" ")[0] ?? "Partner"} 👋</Text>
-            <Text style={styles.heroTitle}>Seamless Deliveries, Delivered Fast</Text>
-            <Text style={styles.heroSubtitle}>
-              Singapore&apos;s most trusted roadway logistics network, right at your fingertips.
-            </Text>
+            <Text style={styles.userGreeting}>{t("welcomeUser")}, {user?.name?.split(" ")[0] ?? "Partner"} 👋</Text>
+            <Text style={styles.heroTitle}>{t("heroTitle")}</Text>
+            <Text style={styles.heroSubtitle}>{t("heroSubtitle")}</Text>
           </View>
 
           {/* Single Primary CTA Button */}
@@ -98,9 +159,9 @@ export default function HomeScreen() {
               onPressOut={onPressOutButton}
               onPress={handleBookShipment}
               accessibilityRole="button"
-              accessibilityLabel="Book a Shipment"
+              accessibilityLabel={t("bookShipment")}
             >
-              <Text style={styles.ctaButtonText}>Book a Shipment</Text>
+              <Text style={styles.ctaButtonText}>{t("bookShipment")}</Text>
               <View style={styles.ctaIconCircle}>
                 <Ionicons name="arrow-forward" size={16} color={colors.primary} />
               </View>
@@ -108,6 +169,53 @@ export default function HomeScreen() {
           </Animated.View>
         </Animated.View>
       </ScrollView>
+
+      {/* Interactive Delivery Notifications Modal */}
+      <Modal visible={notificationsModalOpen} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <Card style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <View style={styles.modalTitleRow}>
+                <Ionicons name="notifications" size={22} color={colors.primary} />
+                <Text style={styles.modalTitle}>{t("deliveryIntimations")}</Text>
+              </View>
+              <Pressable onPress={() => setNotificationsModalOpen(false)} hitSlop={8}>
+                <Ionicons name="close-circle" size={24} color={colors.textSecondary} />
+              </Pressable>
+            </View>
+
+            {arrivingShipments.length > 0 ? (
+              <View style={styles.modalBody}>
+                {arrivingShipments.map((shipment) => (
+                  <View key={shipment.id} style={styles.intimationItem}>
+                    <View style={styles.intimationIcon}>
+                      <Ionicons name="bicycle" size={20} color={colors.primary} />
+                    </View>
+                    <View style={styles.intimationInfo}>
+                      <Text style={styles.intimationTitle}>🚚 {t("outForDelivery")}</Text>
+                      <Text style={styles.intimationDesc}>
+                        Parcel #{shipment.trackingId} is scheduled to arrive at {shipment.delivery?.city} today.
+                      </Text>
+                      <Text style={styles.intimationMeta}>{t("by5pm")}</Text>
+                    </View>
+                  </View>
+                ))}
+
+                <PrimaryButton
+                  label="Test Notification Intimation"
+                  onPress={handleTriggerNotification}
+                  style={{ marginTop: spacing.sm }}
+                />
+              </View>
+            ) : (
+              <View style={styles.emptyNotificationBox}>
+                <Ionicons name="checkmark-circle-outline" size={36} color={colors.success} />
+                <Text style={styles.emptyNotificationText}>{t("noUrgentDelivery")}</Text>
+              </View>
+            )}
+          </Card>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -125,12 +233,14 @@ const styles = StyleSheet.create({
   },
   bellBadge: {
     position: "absolute",
-    top: 9,
-    right: 9,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    top: 8,
+    right: 8,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
     backgroundColor: colors.primary,
+    borderWidth: 1.5,
+    borderColor: colors.card,
   },
   content: {
     paddingHorizontal: spacing.lg,
@@ -141,6 +251,75 @@ const styles = StyleSheet.create({
   },
   mainWrap: {
     gap: spacing.md,
+  },
+  arrivingCardCompact: {
+    backgroundColor: colors.cardWarm,
+    borderWidth: 1.5,
+    borderColor: colors.gold,
+    borderRadius: radius.card,
+    paddingVertical: 8,
+    paddingHorizontal: spacing.sm + 4,
+    ...shadow.card,
+  },
+  arrivingCompactMain: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.xs,
+  },
+  arrivingLeftWrap: {
+    flex: 1,
+    gap: 1,
+  },
+  arrivingTitleWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  pulseDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.success,
+  },
+  arrivingBadgeText: {
+    fontFamily: typography.fontFamily.bodyExtraBold,
+    fontSize: 11,
+    letterSpacing: 0.5,
+    color: colors.primaryDark,
+  },
+  arrivingCompactSub: {
+    fontFamily: typography.fontFamily.bodyMedium,
+    fontSize: 12,
+    color: colors.textPrimary,
+  },
+  arrivingCompactActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  trackButtonCompact: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: colors.primary,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+  },
+  trackButtonTextCompact: {
+    fontFamily: typography.fontFamily.bodyBold,
+    fontSize: 11,
+    color: colors.white,
+  },
+  notifyButtonCompact: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    padding: 6,
+    borderRadius: radius.pill,
   },
   heroTextWrap: {
     alignItems: "center",
@@ -195,4 +374,86 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: colors.overlay,
+    justifyContent: "flex-end",
+  },
+  modalCard: {
+    borderTopLeftRadius: radius.card * 1.5,
+    borderTopRightRadius: radius.card * 1.5,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    padding: spacing.xl,
+    gap: spacing.md,
+    backgroundColor: colors.background,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  modalTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+  },
+  modalTitle: {
+    fontFamily: typography.fontFamily.headingBold,
+    fontSize: typography.h2.fontSize,
+    color: colors.textPrimary,
+  },
+  modalBody: {
+    gap: spacing.sm,
+  },
+  intimationItem: {
+    flexDirection: "row",
+    gap: spacing.md,
+    backgroundColor: colors.surface,
+    padding: spacing.md,
+    borderRadius: radius.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  intimationIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: colors.primarySoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  intimationInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  intimationTitle: {
+    fontFamily: typography.fontFamily.bodyBold,
+    fontSize: typography.bodySmall.fontSize,
+    color: colors.textPrimary,
+  },
+  intimationDesc: {
+    fontFamily: typography.fontFamily.bodyRegular,
+    fontSize: typography.bodySmall.fontSize,
+    color: colors.textSecondary,
+  },
+  intimationMeta: {
+    fontFamily: typography.fontFamily.bodyMedium,
+    fontSize: typography.caption.fontSize,
+    color: colors.primary,
+    marginTop: 2,
+  },
+  emptyNotificationBox: {
+    alignItems: "center",
+    padding: spacing.xl,
+    gap: spacing.sm,
+  },
+  emptyNotificationText: {
+    fontFamily: typography.fontFamily.bodyRegular,
+    fontSize: typography.bodySmall.fontSize,
+    color: colors.textSecondary,
+    textAlign: "center",
+  },
 });
+

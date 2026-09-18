@@ -9,15 +9,15 @@ export interface ShipmentStatusPresentation {
 }
 
 const PRESENTATION: Record<ShipmentStatus, ShipmentStatusPresentation> = {
-  [ShipmentStatus.Pending]: { label: "Pending", color: colors.info, softColor: colors.infoSoft, icon: "time" },
-  [ShipmentStatus.Booked]: { label: "Shipment Booked", color: colors.info, softColor: colors.infoSoft, icon: "cube" },
+  [ShipmentStatus.Pending]: { label: "Pending", color: colors.gold, softColor: colors.goldSoft, icon: "time" },
+  [ShipmentStatus.Booked]: { label: "Shipment Booked", color: colors.gold, softColor: colors.goldSoft, icon: "cube" },
   [ShipmentStatus.OutForDelivery]: {
     label: "Out for Delivery",
     color: colors.primary,
     softColor: colors.primarySoft,
     icon: "bicycle",
   },
-  [ShipmentStatus.InTransit]: { label: "In Transit", color: colors.info, softColor: colors.infoSoft, icon: "bicycle" },
+  [ShipmentStatus.InTransit]: { label: "In Transit", color: colors.primary, softColor: colors.primarySoft, icon: "bicycle" },
   [ShipmentStatus.Delivered]: {
     label: "Delivered",
     color: colors.success,

@@ -12,19 +12,28 @@ interface TextFieldProps extends TextInputProps {
 }
 
 /** Standard labeled text input with an optional leading icon, used across all forms. */
-export function TextField({ label, error, icon, isPassword, style, secureTextEntry, ...rest }: TextFieldProps) {
+export function TextField({ label, error, icon, isPassword, style, secureTextEntry, onFocus, onBlur, ...rest }: TextFieldProps) {
   const [hidden, setHidden] = useState(true);
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View style={styles.wrap}>
       <Text style={styles.label}>{label}</Text>
-      <View style={[styles.inputRow, error && styles.inputRowError]}>
-        {icon ? <Ionicons name={icon} size={18} color={colors.textSecondary} style={styles.icon} /> : null}
+      <View style={[styles.inputRow, isFocused && styles.inputRowFocused, error && styles.inputRowError]}>
+        {icon ? <Ionicons name={icon} size={18} color={isFocused ? colors.primary : colors.textSecondary} style={styles.icon} /> : null}
         <TextInput
           style={[styles.input, style]}
           placeholderTextColor={colors.textMuted}
           accessibilityLabel={label}
           secureTextEntry={isPassword ? hidden : secureTextEntry}
+          onFocus={(e) => {
+            setIsFocused(true);
+            onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setIsFocused(false);
+            onBlur?.(e);
+          }}
           {...rest}
         />
         {isPassword ? (
@@ -34,7 +43,7 @@ export function TextField({ label, error, icon, isPassword, style, secureTextEnt
             accessibilityRole="button"
             accessibilityLabel={hidden ? "Show password" : "Hide password"}
           >
-            <Ionicons name={hidden ? "eye-outline" : "eye-off-outline"} size={18} color={colors.textSecondary} />
+            <Ionicons name={hidden ? "eye-outline" : "eye-off-outline"} size={18} color={isFocused ? colors.primary : colors.textSecondary} />
           </Pressable>
         ) : null}
       </View>
@@ -65,6 +74,9 @@ const styles = StyleSheet.create({
   },
   inputRowError: {
     borderColor: colors.error,
+  },
+  inputRowFocused: {
+    borderColor: colors.primary,
   },
   icon: {
     marginRight: 2,

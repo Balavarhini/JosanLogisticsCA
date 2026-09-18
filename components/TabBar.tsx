@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { colors, spacing, typography } from "@constants/theme";
+import { colors, shadow, spacing, typography } from "@constants/theme";
 
 const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   home: "home",
@@ -72,9 +72,9 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         hitSlop={8}
       >
         <View style={styles.centerButton}>
-          <Ionicons name="add" size={26} color={colors.primary} />
+          <Ionicons name="add" size={26} color={colors.white} />
         </View>
-        <Text style={[styles.label, { color: colors.textMuted }]}>Book</Text>
+        <Text style={[styles.label, { color: colors.textSecondary }]}>Book</Text>
       </Pressable>
 
       {secondHalf.map((route: any, i: number) => renderItem(route, i + half))}
@@ -108,12 +108,13 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    backgroundColor: colors.card,
+    borderWidth: 2.5,
+    borderColor: colors.gold,
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     marginTop: -20,
+    ...shadow.floating,
   },
   label: {
     fontFamily: typography.fontFamily.bodyMedium,

@@ -11,35 +11,41 @@
  */
 
 export const colors = {
-  // Brand
-  primary: "#F77F28",
-  primaryDark: "#C85F16",
-  navy: "#111827",
+  // Brand — Gold & Dust Orange
+  primary: "#C96A32",
+  primaryDark: "#A94F22",
+  gold: "#D4AF5A",
+  goldLight: "#E8D39A",
+  navy: "#1F1F1F",
+  charcoal: "#1F1F1F",
 
   // Text
-  textPrimary: "#111827",
-  textSecondary: "#6B7280",
-  textMuted: "#9CA3AF",
+  textPrimary: "#1F1F1F",
+  textSecondary: "#6E6B65",
+  textMuted: "#A39E93",
   textOnDark: "#FFFFFF",
 
   // Surfaces
-  background: "#FFFFFF",
-  surface: "#F7F8FA",
+  background: "#FAF8F3",
+  surface: "#F2EDE3",
   card: "#FFFFFF",
-  border: "#E5E7EB",
-  overlay: "rgba(17, 24, 39, 0.5)",
+  cardWarm: "#FAF5EC",
+  border: "#E4DCD0",
+  borderGold: "#D4AF5A",
+  overlay: "rgba(31, 31, 31, 0.5)",
 
   // Status (shipment states)
   success: "#16A34A",
   successSoft: "rgba(22, 163, 74, 0.12)",
-  warning: "#F59E0B",
-  warningSoft: "rgba(245, 158, 11, 0.12)",
+  warning: "#D4AF5A",
+  warningSoft: "rgba(212, 175, 90, 0.15)",
   error: "#DC2626",
   errorSoft: "rgba(220, 38, 38, 0.12)",
-  info: "#2563EB",
-  infoSoft: "rgba(37, 99, 235, 0.12)",
-  primarySoft: "rgba(247, 127, 40, 0.12)",
-  neutralSoft: "rgba(107, 114, 128, 0.12)",
+  info: "#C96A32",
+  infoSoft: "rgba(201, 106, 50, 0.12)",
+  primarySoft: "rgba(201, 106, 50, 0.12)",
+  goldSoft: "rgba(212, 175, 90, 0.15)",
+  neutralSoft: "rgba(110, 107, 101, 0.12)",
 
   white: "#FFFFFF",
   black: "#000000",
@@ -85,18 +91,18 @@ export const radius = {
 
 export const shadow = {
   card: {
-    shadowColor: "#111827",
+    shadowColor: "#1F1F1F",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.05,
     shadowRadius: 12,
     elevation: 2,
   },
   floating: {
-    shadowColor: "#F77F28",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowColor: "#C96A32",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 14,
+    elevation: 6,
   },
 } as const;
 

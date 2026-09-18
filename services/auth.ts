@@ -39,6 +39,25 @@ export async function login(payload: LoginRequest): Promise<LoginResponse> {
   }
 }
 
+export async function loginWithGoogle(): Promise<LoginResponse> {
+  try {
+    return await api.post<LoginResponse>("/auth/google");
+  } catch (err: any) {
+    if (__DEV__ || err?.message?.includes("Can't reach the server") || err?.status === 0 || err?.code === "ERR_NETWORK") {
+      console.log("[auth] Logging in with Google via dev mode.");
+      const mockUser: User = {
+        id: "usr_google_sg",
+        name: "Google User",
+        email: "google.user@example.com",
+      };
+      const mockRes: LoginResponse = { token: "google_token_123", refreshToken: "google_refresh_123" };
+      await persistSession(mockRes.token, mockRes.refreshToken, mockUser);
+      return mockRes;
+    }
+    throw err;
+  }
+}
+
 export async function register(payload: RegisterRequest): Promise<RegisterResponse> {
   try {
     return await api.post<RegisterResponse>("/auth/register", payload);

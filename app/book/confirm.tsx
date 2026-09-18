@@ -10,7 +10,7 @@ import { SecondaryButton } from "@/components/SecondaryButton";
 const STEPS = ["Details", "Package", "Review", "Payment", "Confirm"];
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const CONFETTI_COLORS = ["#FF5252", "#FF4081", "#E040FB", "#7C4DFF", "#536DFE", "#448AFF", "#1DE9B6", "#00E676", "#FFD740", "#FF6D00"];
+const CONFETTI_COLORS = ["#C96A32", "#A94F22", "#D4AF5A", "#E8D39A", "#16A34A", "#1F1F1F", "#F2EDE3", "#C96A32", "#D4AF5A"];
 
 interface Particle {
   id: number;
@@ -179,7 +179,7 @@ export default function BookConfirmScreen() {
           {transactionId ? (
             <View style={styles.paymentSummaryCard}>
               <View style={styles.paypalSuccessHeader}>
-                <Ionicons name="logo-paypal" size={20} color="#0070BA" />
+                <Ionicons name="logo-paypal" size={20} color={colors.primaryDark} />
                 <Text style={styles.paypalSuccessTitle}>PayPal SG Payment Details</Text>
               </View>
               <View style={styles.summaryRow}>
@@ -228,11 +228,11 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 55,
-    backgroundColor: colors.primarySoft,
+    backgroundColor: colors.goldSoft,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: colors.primary,
+    borderColor: colors.gold,
   },
   partyPopperWrap: {
     width: 90,
@@ -271,19 +271,19 @@ const styles = StyleSheet.create({
   paymentSummaryCard: {
     marginTop: spacing.md,
     width: "100%",
-    backgroundColor: "#F4F7FA",
+    backgroundColor: colors.surface,
     borderRadius: radius.card,
     padding: spacing.md,
     borderWidth: 1,
-    borderColor: "#0070BA",
+    borderColor: colors.gold,
     gap: spacing.xs,
   },
   paypalSuccessHeader: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginBottom: 4 },
-  paypalSuccessTitle: { fontFamily: typography.fontFamily.bodyBold, fontSize: typography.bodySmall.fontSize, color: "#003087" },
+  paypalSuccessTitle: { fontFamily: typography.fontFamily.bodyBold, fontSize: typography.bodySmall.fontSize, color: colors.primaryDark },
   summaryRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   summaryLabel: { fontFamily: typography.fontFamily.bodyRegular, fontSize: typography.caption.fontSize, color: colors.textSecondary },
   summaryValue: { fontFamily: typography.fontFamily.bodyMedium, fontSize: typography.caption.fontSize, color: colors.textPrimary },
-  summaryValueHighlight: { fontFamily: typography.fontFamily.bodyBold, fontSize: typography.bodySmall.fontSize, color: "#0070BA" },
+  summaryValueHighlight: { fontFamily: typography.fontFamily.bodyBold, fontSize: typography.bodySmall.fontSize, color: colors.primary },
   particle: { position: "absolute", top: 0 },
   footer: {
     flexDirection: "row",

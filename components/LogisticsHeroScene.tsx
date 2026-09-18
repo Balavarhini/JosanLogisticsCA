@@ -117,7 +117,7 @@ export function LogisticsHeroScene() {
           <Defs>
             <LinearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <Stop offset="0%" stopColor={colors.primary} stopOpacity="0.9" />
-              <Stop offset="50%" stopColor="#FFA048" stopOpacity="1" />
+              <Stop offset="50%" stopColor={colors.gold} stopOpacity="1" />
               <Stop offset="100%" stopColor={colors.navy} stopOpacity="0.9" />
             </LinearGradient>
           </Defs>
@@ -126,7 +126,7 @@ export function LogisticsHeroScene() {
           <Path
             d="M 36,65 Q 150,125 264,67"
             fill="none"
-            stroke="rgba(247, 127, 40, 0.15)"
+            stroke="rgba(201, 106, 50, 0.2)"
             strokeWidth="12"
             strokeLinecap="round"
           />
@@ -173,7 +173,7 @@ export function LogisticsHeroScene() {
               },
             ]}
           />
-          <View style={[styles.pinDot, { backgroundColor: colors.navy }]}>
+          <View style={[styles.pinDot, { backgroundColor: colors.gold }]}>
             <Text style={styles.flagText}>🇸🇬</Text>
           </View>
           <Animated.View style={[styles.labelBadge, { transform: [{ translateY: floatAnim }] }]}>

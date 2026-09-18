@@ -14,6 +14,7 @@ import {
 } from "@expo-google-fonts/nunito";
 import { Ionicons } from "@expo/vector-icons";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { LanguageProvider } from "@/hooks/useLanguage";
 import { colors } from "@constants/theme";
 
 // Keep the native splash screen up until fonts are loaded AND the auth
@@ -106,9 +107,11 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayout}>
       <SafeAreaProvider>
-        <AuthProvider>
-          <AppShell />
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <AppShell />
+          </AuthProvider>
+        </LanguageProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
